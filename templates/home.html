@@ -1,0 +1,39 @@
+{% load static %}<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Inventory Manager</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  </head>
+  <body>
+    <div class="container">
+      <ol class="breadcrumb my-4">
+        <li class="breadcrumb-item active">Boards</li>
+      </ol>
+      <table class="table">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Tool</th>
+                <th>Checked Out?</th>
+                <th>Time Checked Out</th>
+                <th>Checked Out By</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for tool in tools %}
+                <tr>
+                    <td class="align-middle">
+                    {{ tool.name }}
+                  </td>
+                  <td class="align-middle">{{ tool.isCheckedOut  }}</td>
+                  <td class="align-middle">{{ tool.timeCheckedOut }}</td>
+                  <td class="align-middle">{{ tool.userCheckedOut }}</td>
+                  <td class="align-middle"> {{ tool.location }}</td>
+                </tr>
+              {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
