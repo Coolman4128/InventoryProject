@@ -17,7 +17,7 @@ class Tool(models.Model):
 class Supply(models.Model):
     name = models.CharField(max_length=255, unique = True)
     barcodeID = models.CharField(max_length=255, unique=True)
-    quantityReplenished = models.IntegerField()
+    quantityReplenished = models.CharField(max_length=255)
     isLow = models.BooleanField(db_default=False)
     lastReplenished = models.DateTimeField(auto_now_add=True)
     whoReplenished = models.CharField(max_length=50)

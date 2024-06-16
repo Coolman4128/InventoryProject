@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Entry{% endblock %}
+  
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item">Delete Entry</li>
+{% endblock %}
+
+{% block content %}
+    <h1>Tools:</h1>
+    <div class="container">
+      <table class="table">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Tool</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for tool in tools %}
+                <tr>
+                    <td class="align-middle">
+                    <a href="{% url 'del_tool' tool.barcodeID 'SERVERREQUEST' %}">{{ tool.name }}</a>
+                </tr>
+              {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <h1>Supplies:</h1>
+    <div class="container">
+      <table class="table">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Supply</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for supply in supplys %}
+                <tr>
+                    <td class="align-middle">
+                    <a href="{% url 'del_supply' supply.barcodeID  'SERVERREQUEST' %}">{{ supply.name }}</a>
+                  </td>
+                </tr>
+              {% endfor %}
+        </tbody>
+      </table>
+    </div>
+{% endblock %}
+
+
+

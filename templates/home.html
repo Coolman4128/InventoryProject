@@ -1,15 +1,15 @@
-{% load static %}<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Inventory Manager</title>
-    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-  </head>
-  <body>
+{% extends 'base.html' %}
+
+{% block title %}Mountain Inventory{% endblock %}
+  
+
+{% block breadcrumb %}
+  <li class="breadcrumb-item">Inventory List</li>
+{% endblock %}
+
+{% block content %}
+    <h1>Tools:</h1>
     <div class="container">
-      <ol class="breadcrumb my-4">
-        <li class="breadcrumb-item active">Boards</li>
-      </ol>
       <table class="table">
         <thead class="thead-inverse">
             <tr>
@@ -35,5 +35,36 @@
         </tbody>
       </table>
     </div>
-  </body>
-</html>
+
+    <h1>Supplies:</h1>
+    <div class="container">
+      <table class="table">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Supply</th>
+                <th>Quantity</th>
+                <th>Is Low?</th>
+                <th>Last Replenished</th>
+                <th>Replenished By</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for supply in supplys %}
+                <tr>
+                    <td class="align-middle">
+                    {{ supply.name }}
+                  </td>
+                  <td class="align-middle">{{  supply.quantityReplenished}}</td>
+                  <td class="align-middle">{{  supply.isLow}}</td>
+                  <td class="align-middle">{{ supply.lastReplenished }}</td>
+                  <td class="align-middle">{{ supply.whoReplenished }}</td>
+                  <td class="align-middle"> {{ supply.location }}</td>
+                </tr>
+              {% endfor %}
+        </tbody>
+      </table>
+    </div>
+{% endblock %}
+
+
