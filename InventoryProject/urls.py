@@ -23,6 +23,7 @@ urlpatterns = [
     re_path(r"^$", views.home, name="home"),
     re_path(r"^tools/newtool/$", views.newTool, name="newTool"),
     re_path(r"^supply/newsupply/$", views.newSupply, name="newSupply"),
+    re_path(r"^codes/findtype/(?P<pk>\w+)/$", views.findType, name="findType"),
     re_path(r"^delete/$", views.del_UI, name="delUI"),
     re_path(r"^tools/get/(?P<pk>\w+)/$", views.get_Tool, name="getTool"),
     re_path(r"^supply/get/(?P<pk>\w+)/$", views.get_Supply, name="getSupply"),
@@ -31,5 +32,6 @@ urlpatterns = [
     re_path(r"^supply/edit/(?P<pk>\w+)/islow/(?P<key>[a-zA-Z0-9-_]+)/$", views.low_Supply, name="low_supply"),
     re_path(r"^tools/del/(?P<pk>[a-zA-Z0-9-_()]+)/(?P<key>[a-zA-Z0-9-_()]+)/$", views.del_Tool, name="del_tool"),
     re_path(r"^supply/del/(?P<pk>\w+)/(?P<key>\w+)/$", views.del_Supply, name="del_supply"),
+    re_path(r"^users/get/(?P<pk>\w+)/$", views.get_user, name="get_user"),
     path("admin/", admin.site.urls),
 ]

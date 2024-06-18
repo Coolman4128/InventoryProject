@@ -14,6 +14,29 @@ class Tool(models.Model):
         return self.name
 
 
+class Job(models.Model):
+    name = models.CharField(max_length=255, unique = True)
+    barcodeID = models.CharField(max_length=255, unique=True)
+    isBeingWorkedOn = models.BooleanField()
+    timeScannedIn = models.DateTimeField(null=True, blank=True)
+    userScannedIn = models.CharField(max_length=50, blank=True)
+    totalHours = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.name
+
+""" class History(models.Model):
+    name = models.CharField(max_length=255, unique = True)
+    barcodeID = models.CharField(max_length=255, unique=True)
+    quantityReplenished = models.CharField(max_length=255)
+    isLow = models.BooleanField(db_default=False)
+    lastReplenished = models.DateTimeField(auto_now_add=True)
+    whoReplenished = models.CharField(max_length=50)
+    location = models.CharField(max_length = 255) 
+
+    def __str__(self):
+        return self.name """
+
 class Supply(models.Model):
     name = models.CharField(max_length=255, unique = True)
     barcodeID = models.CharField(max_length=255, unique=True)
@@ -28,6 +51,7 @@ class Supply(models.Model):
 
 class InvUser(models.Model):
     name = models.CharField(max_length=50, unique = True)
+    barcodeID = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name

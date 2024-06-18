@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from .models import Tool
 from .models import Supply
+from .models import InvUser
 from .forms import NewToolForm
 from .forms import NewSupplyForm
 from django.views.decorators.csrf import csrf_exempt
@@ -34,6 +35,32 @@ def get_Supply(request, pk):
     supply = get_object_or_404(Supply, barcodeID=pk)
     data = serializers.serialize('json', [supply])
     return HttpResponse(data, content_type='application/json')
+
+def get_user(request, pk):
+    user = get_object_or_404(InvUser, barcodeID=pk)
+    data = serializers.serialize('json', [user])
+    return HttpResponse(data, content_type='application/json')
+
+def findType(request, pk):
+    foundName = ''
+    tools = Tool.objects.all()
+    supplys = Supply.objects.all()
+    users = InvUser.objects.all()
+
+    for tool in tools:
+        if tool.barcodeID == pk:
+            foundName = 'tool'
+            return HttpResponse(foundName)
+    for supply in supplys:
+        if supply.barcodeID == pk:
+            foundName = 'supply'
+            return HttpResponse(foundName)
+    for user in users:
+        if user.barcodeID == pk:
+            foundName = 'user'
+            return HttpResponse(foundName)
+    
+    return HttpResponse(foundName)
 
 def check_Tool(request, pk, key, user):
     #if (fernet.decrypt(key).decode() in SCANNERKEYS):
