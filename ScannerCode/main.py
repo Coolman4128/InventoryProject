@@ -49,8 +49,15 @@ def waitForTool():
     codeType = requests.get(BASEURL + "/codes/findtype/" + code + "/")
     if codeType.text == "tool":
         result = checkTool(code)
+        if result[0]["fields"]["isCheckedOut"]:
+             print("Successfully checked out " + result[0]["fields"]["name"])
+        else:
+             print("Successfully checked in " + result[0]["fields"]["name"])
+
     elif codeType.text == "supply":
-        pass
+        result = replenishSupply(code)
+        print("Successfully replenished " + result[0]["fields"]["name"])
+
     elif codeType.text == "user":
         logoutUser(code)
     else:
@@ -89,7 +96,17 @@ def checkTool(tool):
         contents = requests.get(url)
         contents.raise_for_status()
     except:
-        return logoutUser(tool)
+        print("Lost Connection To Server")
+    obj = json.loads(contents.text)
+    return obj
+
+def replenishSupply(supply):
+    url = 'http://192.168.1.86:8000/supply/edit/' + supply + "/replen/" + HIDDENKEY + "/" + USERLOGGED
+    try:
+        contents = requests.get(url)
+        contents.raise_for_status()
+    except:
+        print("Lost Connection To Server")
     obj = json.loads(contents.text)
     return obj
 
