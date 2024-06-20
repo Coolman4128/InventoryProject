@@ -4,14 +4,16 @@
   
 
 {% block breadcrumb %}
+<ol class="breadcrumb my-4">
   <li class="breadcrumb-item">Inventory List</li>
+</ol>
 {% endblock %}
 
 {% block content %}
     <h1>Tools:</h1>
     <div class="container">
-      <table class="table">
-        <thead class="thead-inverse">
+      <table class="table table-sm table-bordered">
+        <thead class="thead-dark">
             <tr>
                 <th>Tool</th>
                 <th>Checked Out?</th>
@@ -38,8 +40,8 @@
 
     <h1>Supplies:</h1>
     <div class="container">
-      <table class="table">
-        <thead class="thead-inverse">
+      <table class="table table-sm table-bordered">
+        <thead class="thead-dark">
             <tr>
                 <th>Supply</th>
                 <th>Quantity</th>

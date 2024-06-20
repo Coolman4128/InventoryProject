@@ -9,7 +9,6 @@ class Tool(models.Model):
     timeCheckedOut = models.DateTimeField(null=True, blank=True)
     userCheckedOut = models.CharField(max_length=50, blank=True)
     location = models.CharField(max_length = 255)
-
     def __str__(self):
         return self.name
 
@@ -17,22 +16,20 @@ class Tool(models.Model):
 class Job(models.Model):
     name = models.CharField(max_length=255, unique = True)
     barcodeID = models.CharField(max_length=255, unique=True)
+    barcode_img = models.ImageField(upload_to='images/')
     isBeingWorkedOn = models.BooleanField()
     timeScannedIn = models.DateTimeField(null=True, blank=True)
-    userScannedIn = models.CharField(max_length=50, blank=True)
-    totalHours = models.IntegerField(default=0)
+    userScannedIn = models.CharField(max_length=255, blank=True)
+    totalHours = models.FloatField(default=0)
 
     def __str__(self):
         return self.name
 
-""" class History(models.Model):
-    name = models.CharField(max_length=255, unique = True)
-    barcodeID = models.CharField(max_length=255, unique=True)
-    quantityReplenished = models.CharField(max_length=255)
-    isLow = models.BooleanField(db_default=False)
-    lastReplenished = models.DateTimeField(auto_now_add=True)
-    whoReplenished = models.CharField(max_length=50)
-    location = models.CharField(max_length = 255) 
+""" class Log(models.Model):
+    action = models.CharField(max_length=255, unique = True)
+    user = models.CharField(max_length=255, unique = True)
+    subject = models.CharField(max_length=255, unique = True)
+    time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name """

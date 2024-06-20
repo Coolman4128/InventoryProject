@@ -4,7 +4,10 @@
   
 
 {% block breadcrumb %}
+<ol class="breadcrumb my-4">
   <li class="breadcrumb-item">Delete Entry</li>
+</ol>
+ 
 {% endblock %}
 
 {% block content %}
@@ -40,6 +43,26 @@
                 <tr>
                     <td class="align-middle">
                     <a href="{% url 'del_supply' supply.barcodeID  'SERVERREQUEST' %}">{{ supply.name }}</a>
+                  </td>
+                </tr>
+              {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <h1>Jobs:</h1>
+    <div class="container">
+      <table class="table">
+        <thead class="thead-inverse">
+            <tr>
+                <th>Job</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for job in jobs %}
+                <tr>
+                    <td class="align-middle">
+                    <a href="{% url 'del_job' job.barcodeID  'SERVERREQUEST' %}">{{ job.name }}</a>
                   </td>
                 </tr>
               {% endfor %}

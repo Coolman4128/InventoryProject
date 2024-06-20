@@ -18,9 +18,18 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import re_path
 from tools import views
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.static import serve
+from django.urls import re_path
 
-urlpatterns = [
+    
+
+urlpatterns =[
     re_path(r"^$", views.home, name="home"),
+    re_path(r"^jobs/$", views.jobs, name="jobs"),
+    re_path(r"^jobs/newjob/$", views.newJob, name="newJob"),
+    re_path(r"^jobs/edit/(?P<pk>\w+)/scan/(?P<key>[a-zA-Z0-9-_]+)/(?P<user>\w+)/$", views.scanIntoJob, name="scanJob"),
     re_path(r"^tools/newtool/$", views.newTool, name="newTool"),
     re_path(r"^supply/newsupply/$", views.newSupply, name="newSupply"),
     re_path(r"^codes/findtype/(?P<pk>\w+)/$", views.findType, name="findType"),
@@ -32,6 +41,10 @@ urlpatterns = [
     re_path(r"^supply/edit/(?P<pk>\w+)/islow/(?P<key>[a-zA-Z0-9-_]+)/$", views.low_Supply, name="low_supply"),
     re_path(r"^tools/del/(?P<pk>[a-zA-Z0-9-_()]+)/(?P<key>[a-zA-Z0-9-_()]+)/$", views.del_Tool, name="del_tool"),
     re_path(r"^supply/del/(?P<pk>\w+)/(?P<key>\w+)/$", views.del_Supply, name="del_supply"),
+    re_path(r"^job/del/(?P<pk>\w+)/(?P<key>\w+)/$", views.del_Job, name="del_job"),
     re_path(r"^users/get/(?P<pk>\w+)/$", views.get_user, name="get_user"),
     path("admin/", admin.site.urls),
-]
+    re_path(r'^media/(?P<path>.*)$', serve,
+        {'document_root': settings.MEDIA_ROOT}),
+]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

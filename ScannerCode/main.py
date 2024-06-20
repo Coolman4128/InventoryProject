@@ -1,3 +1,4 @@
+import PySimpleGUI as sg
 import requests
 import json
 import RPi.GPIO as GPIO
@@ -7,6 +8,12 @@ import sys
 import keyboard
 
 
+layout = [[sg.Text(text='Inventory Scanner',
+		font=('Arial Bold', 20),
+		size=20,
+		expand_x=True,
+		justification='center')],
+]
 
 BUTTON_GPIO = 16
 USERLOGGED = 'Ethan'
@@ -34,34 +41,38 @@ def startUp():
             if contents.status_code == 200:
                 break
         except:
-            print("Cannot Connect to Inventory Server")
+            sg.popup("Can't Connect To Server", no_titlebar=True, auto_close=True, auto_close_duration=2)
             continue
     return
         
 def waitForUser():
     print("Please scan your Employee Code:")
-    code = input()
+    code = sg.popup_get_text("Please scan your Employee Code:", no_titlebar=True, font=('Arial Bold', 14))
     loginUser(code)    
 
 def waitForTool():
     print("You are signed in as " + USERLOGGED +". Please scan a barcode:")
-    code = input()
+    code = sg.popup_get_text("You are signed in as " + USERLOGGED +". Please scan a barcode:", no_titlebar=True, font=('Arial Bold', 14))
     codeType = requests.get(BASEURL + "/codes/findtype/" + code + "/")
     if codeType.text == "tool":
         result = checkTool(code)
         if result[0]["fields"]["isCheckedOut"]:
-             print("Successfully checked out " + result[0]["fields"]["name"])
+             sg.popup("Successfully checked out " + result[0]["fields"]["name"], no_titlebar=True, auto_close=True, auto_close_duration=2)
         else:
-             print("Successfully checked in " + result[0]["fields"]["name"])
+             sg.popup("Successfully checked in " + result[0]["fields"]["name"], no_titlebar=True, auto_close=True, auto_close_duration=2)
 
     elif codeType.text == "supply":
         result = replenishSupply(code)
-        print("Successfully replenished " + result[0]["fields"]["name"])
+        sg.popup("Successfully replenished " + result[0]["fields"]["name"], no_titlebar=True, auto_close=True, auto_close_duration=2)
+    
+    elif codeType.text == "job":
+        result = scanJob(code)
+        sg.popup("Successfully Scanned " + result[0]["fields"]["name"], no_titlebar=True, auto_close=True, auto_close_duration=2)
 
     elif codeType.text == "user":
         logoutUser(code)
     else:
-        print("Code Not Recongized")
+        sg.popup("Code Not Recongized", no_titlebar=True, auto_close=True, auto_close_duration=1)
 
 
 def loginUser(user):
@@ -73,7 +84,7 @@ def loginUser(user):
             contents.status_code
             break
         except:
-            print("Employee Code not in system, please try again")
+            sg.popup("Employee not in system, please try again", no_titlebar=True, auto_close=True, auto_close_duration=1)
             continue
     obj = json.loads(contents.text)
     USERLOGGED = obj[0]["fields"]["name"]
@@ -87,7 +98,7 @@ def logoutUser(user):
     if obj[0]["fields"]["name"] == USERLOGGED:
         USERLOGGED = ""
     else:
-        print("Please sign out current user before signing in. Current User is: " + USERLOGGED)
+        sg.popup("Please sign out of current user before signing in again, Current user is " + USERLOGGED, no_titlebar=True, auto_close=True, auto_close_duration=1)
     return obj
 
 def checkTool(tool):
@@ -96,7 +107,17 @@ def checkTool(tool):
         contents = requests.get(url)
         contents.raise_for_status()
     except:
-        print("Lost Connection To Server")
+        sg.popup("Can't Connect To Server", no_titlebar=True, auto_close=True, auto_close_duration=1)
+    obj = json.loads(contents.text)
+    return obj
+    
+def scanJob(tool):
+    url = 'http://192.168.1.86:8000/jobs/edit/' + tool + "/scan/" + HIDDENKEY + "/" + USERLOGGED
+    try:
+        contents = requests.get(url)
+        contents.raise_for_status()
+    except:
+        sg.popup("Can't Connect To Server", no_titlebar=True, auto_close=True, auto_close_duration=1)
     obj = json.loads(contents.text)
     return obj
 
@@ -106,20 +127,29 @@ def replenishSupply(supply):
         contents = requests.get(url)
         contents.raise_for_status()
     except:
-        print("Lost Connection To Server")
+        sg.popup("Can't Connect To Server", no_titlebar=True, auto_close=True, auto_close_duration=1)
     obj = json.loads(contents.text)
     return obj
 
-
-if __name__ == '__main__':
-	GPIO.setmode(GPIO.BCM)
-	GPIO.setup(BUTTON_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-	signal.signal(signal.SIGINT, signal_handler)
-	setup()
-	startUp()
+window = sg.Window("Inventory Sysetm", layout, no_titlebar=False, location=(0,0), size=(640,480), keep_on_top=True).finalize()
+window.bind("<Escape>", "-ESCAPE-")
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(BUTTON_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+signal.signal(signal.SIGINT, signal_handler)
+setup()
+startUp()
+while True:
+	waitForUser()
 	while True:
-		waitForUser()
-		while True:
 			waitForTool()
 			if USERLOGGED == "":
 				break
+	event, values = window.read(timeout=10)
+	print(event, values)
+	if event in (None, "Exit"):
+		break
+	if event in (sg.WINDOW_CLOSED, "-ESCAPE-"):
+		break
+	
+	
+window.close()

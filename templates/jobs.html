@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Mountain Inventory{% endblock %}
+
+
+{% block content %}
+<script>
+  window.onload = () => {
+     console.clear()
+     console.log('page loaded!');
+     setInterval(() => {
+        window.location = window.location.href;
+     }, 5000)
+  }
+</script>
+<h1></h1>
+    <div class="container">
+        <table class="table table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Job</th>
+                <th scope="col">Barcode</th>
+                <th scope="col">Worked On?</th>
+                <th scope="col">Employee Working</th>
+                <th scope="col">Total Hours</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for job in jobs %}
+                <tr>
+                    <td class="align-middle">
+                    {{ job.name }}
+                  </td>
+                  <td class="align-middle">
+                    <img src="{{job.barcode_img.url}}" width="150" height="45"> </img>
+                  </td>
+                  <td class="align-self-end">
+                  {% if job.isBeingWorkedOn == True %}
+                  <img class="align-self-center" src="/media/images/greenlight.png" width="45" height="45"> </img>
+                  {% else %}
+                  <img class="align-self-center" src="/media/images/redlight.png" width="45" height="45"> </img>
+                  {% endif %}
+                </td>
+                <td class="align-middle">
+                    {{ job.userScannedIn }}
+                  </td>
+                  <td class="align-middle">
+                    {{ job.totalHours|floatformat:"-3"}}
+                  </td>
+                </tr>
+              {% endfor %}
+        </tbody>
+      </table>
+    </div>
+{% endblock %}
+
+

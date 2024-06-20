@@ -2,16 +2,16 @@
 
 {% load widget_tweaks %}
 
-{% block title %}New Supply{% endblock %}
+{% block title %}New Job{% endblock %}
 
 {% block breadcrumb %}
 <ol class="breadcrumb my-4">
-  <li class="breadcrumb-item">New Supply</li>
+  <li class="breadcrumb-item">New Job</li>
 </ol>
 {% endblock %}
 
 {% block content %}
-  <form method="post" novalidate>
+  <form method = "post" enctype="multipart/form-data">
     {% csrf_token %}
 
     {% for field in form %}
