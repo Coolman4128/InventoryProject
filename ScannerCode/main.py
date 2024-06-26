@@ -6,7 +6,7 @@ import signal
 import time
 import sys
 import keyboard
-
+import serial
 
 layout = [[sg.Text(text='Inventory Scanner',
 		font=('Arial Bold', 20),
@@ -47,12 +47,27 @@ def startUp():
         
 def waitForUser():
     print("Please scan your Employee Code:")
-    code = sg.popup_get_text("Please scan your Employee Code:", no_titlebar=True, font=('Arial Bold', 14))
-    loginUser(code)    
+    while True:
+        sg.popup("Please scan your Employee Code:", no_titlebar=True, auto_close=True, auto_close_duration=2)
+        code = readCodeInput()
+        mesCode = loginUser(code) 
+        if  mesCode == -1:
+             continue
+        else:
+            break
+
+def readCodeInput():
+    output = " "
+    ser = serial.Serial('/dev/ttyACM0', 4800, 8, 'N', 1, timeout=1)
+    while True:
+        while output != "":
+            output = ser.readline()
+            print (output)
+        return output
 
 def waitForTool():
     print("You are signed in as " + USERLOGGED +". Please scan a barcode:")
-    code = sg.popup_get_text("You are signed in as " + USERLOGGED +". Please scan a barcode:", no_titlebar=True, font=('Arial Bold', 14))
+    code = sg.popup_get_text("You are signed in as " + USERLOGGED +". Please scan a barcode:", no_titlebar=True, font=('Arial Bold', 10))
     codeType = requests.get(BASEURL + "/codes/findtype/" + code + "/")
     if codeType.text == "tool":
         result = checkTool(code)
@@ -85,7 +100,7 @@ def loginUser(user):
             break
         except:
             sg.popup("Employee not in system, please try again", no_titlebar=True, auto_close=True, auto_close_duration=1)
-            continue
+            return -1
     obj = json.loads(contents.text)
     USERLOGGED = obj[0]["fields"]["name"]
     return obj
@@ -131,7 +146,7 @@ def replenishSupply(supply):
     obj = json.loads(contents.text)
     return obj
 
-window = sg.Window("Inventory Sysetm", layout, no_titlebar=False, location=(0,0), size=(640,480), keep_on_top=True).finalize()
+window = sg.Window("Inventory Sysetm", layout, no_titlebar=False, location=(0,0), size=(480,360), keep_on_top=True).finalize()
 window.bind("<Escape>", "-ESCAPE-")
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(BUTTON_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
