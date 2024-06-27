@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Mountain Inventory{% endblock %}
+  
+
+{% block breadcrumb %}
+<ol class="breadcrumb my-4">
+  <li class="breadcrumb-item">Inventory List</li>
+</ol>
+{% endblock %}
+
+{% block content %}
+    <h1>LOG</h1>
+    <div class="container">
+      <table class="table table-sm table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Action</th>
+                <th>User</th>
+                <th>Subject</th>
+                <th>Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for log in logs %}
+                <tr>
+                    <td class="align-middle">
+                    {{ log.action}}
+                  </td>
+                  <td class="align-middle">{{ log.user }}</td>
+                  <td class="align-middle">{{ log.subject }}</td>
+                  <td class="align-middle">{{ log.time }}</td>
+                </tr>
+              {% endfor %}
+        </tbody>
+      </table>
+    </div>
+{% endblock %}
+
+

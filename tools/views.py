@@ -5,6 +5,7 @@ from .models import Tool
 from .models import Supply
 from .models import InvUser
 from .models import Job
+from .models import Log
 from .forms import NewToolForm
 from .forms import NewSupplyForm
 from .forms import NewJobForm
@@ -24,14 +25,25 @@ ENCRYPTEDSCANKEYS[0] = fernet.encrypt(SCANNERKEYS[0].encode())
 LOWSUPPLYCODE = "12345678910"
 
 
+def createLog(action, user, subject):
+    log = Log()
+    log.action = action
+    log.user = user
+    log.subject = subject
+    log.time = timezone.now()
+    log.save()
+
 def home(request):
     tools = Tool.objects.all()
     supplys = Supply.objects.all()
     return render(request, 'home.html', {'tools': tools, 'supplys': supplys})
 
+def log(request):
+    logs = Log.objects.all().order_by("-id").values()
+    return render(request, 'logs.html', {'logs': logs})
+
 def jobs(request):
     allJobs = Job.objects.all()
-    print(allJobs[0].barcode_img.url)
     return render(request, 'jobs.html', {"jobs": allJobs})
 
 @csrf_exempt 
@@ -45,6 +57,7 @@ def newJob(request):
             job.timeScannedIn = None
             job.totalHours = 0
             job.save()
+            createLog("Create New Job", "SERVER", job.name)
             return redirect('jobs') 
         else:
             print(form.errors)
@@ -103,10 +116,12 @@ def check_Tool(request, pk, key, user):
             tool.isCheckedOut = False
             tool.userCheckedOut = ''
             tool.timeCheckedOut = None
+            createLog("Checked in tool", user, tool.name)
         else:
             tool.isCheckedOut = True
             tool.timeCheckedOut = timezone.now()
             tool.userCheckedOut = user
+            createLog("Checked out tool", user, tool.name)
         tool.save()
         return HttpResponse(serializers.serialize('json', [tool]), content_type='application/json')
     else:
@@ -120,6 +135,7 @@ def replenish_Supply(request, pk, key, user):
         supply.whoReplenished = user
         supply.lastReplenished = timezone.now()
         supply.save()
+        createLog("Replenished Supply", user, supply.name)
         return HttpResponse(serializers.serialize('json', [supply]), content_type='application/json')
     else:
         return HttpResponse("NOT AUTHENTICATED")
@@ -153,6 +169,7 @@ def scanIntoJob(request, pk, key, user):
             job.timeScannedIn = timezone.now()
             job.userScannedIn = user
         job.save()
+        createLog("Scanned In/Out", user, job.name)
         return HttpResponse(serializers.serialize('json', [job]), content_type='application/json')
     else:
         return HttpResponse("NOT AUTHENTICATED")
@@ -163,6 +180,7 @@ def low_Supply(request, pk, key):
         supply = get_object_or_404(Supply, barcodeID=pk)
         supply.isLow = True
         supply.save()
+        createLog("Marked Low", "SERVER", supply.name)
         return HttpResponse(serializers.serialize('json', [supply]), content_type='application/json')
     else:
         return HttpResponse("NOT AUTHENTICATED")
@@ -171,6 +189,7 @@ def del_Tool(request, pk, key):
     #if (fernet.decrypt(key).decode() in SCANNERKEYS):
     if (key in SCANNERKEYS):
         tool = get_object_or_404(Tool, barcodeID=pk)
+        createLog("Deleted", "SERVER", tool.name)
         tool.delete()
         if (key == "SERVERREQUEST"):
             return redirect('home')
@@ -182,6 +201,7 @@ def del_Supply(request, pk, key):
     #if (fernet.decrypt(key).decode() in SCANNERKEYS):
     if (key in SCANNERKEYS):
         supply = get_object_or_404(Supply, barcodeID=pk)
+        createLog("Deleted", "SERVER", supply.name)
         supply.delete()
         if (key == "SERVERREQUEST"):
             return redirect('home')
@@ -193,6 +213,7 @@ def del_Job(request, pk, key):
     #if (fernet.decrypt(key).decode() in SCANNERKEYS):
     if (key in SCANNERKEYS):
         job = get_object_or_404(Job, barcodeID=pk)
+        createLog("Deleted", "SERVER", job.name)
         job.delete()
         if (key == "SERVERREQUEST"):
             return redirect('jobs')
@@ -216,6 +237,7 @@ def newTool(request):
             tool.userCheckedOut = ''
             tool.timeCheckedOut = None
             tool.save()
+            createLog("Created New Tool", "SERVER", tool.name)
             return redirect('home')
     else:
         form = NewToolForm()
@@ -230,6 +252,7 @@ def newSupply(request):
             supply.isLow = False
             supply.whoReplenished = ''
             supply.save()
+            createLog("Created New Supply", "SERVER", supply.name)
             return redirect('home')
     else:
         form = NewSupplyForm()

@@ -27,6 +27,7 @@ from django.urls import re_path
 
 urlpatterns =[
     re_path(r"^$", views.home, name="home"),
+    re_path(r"^logs/$", views.log, name="logs"),
     re_path(r"^jobs/$", views.jobs, name="jobs"),
     re_path(r"^jobs/newjob/$", views.newJob, name="newJob"),
     re_path(r"^jobs/edit/(?P<pk>\w+)/scan/(?P<key>[a-zA-Z0-9-_]+)/(?P<user>\w+)/$", views.scanIntoJob, name="scanJob"),

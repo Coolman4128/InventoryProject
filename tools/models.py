@@ -25,14 +25,14 @@ class Job(models.Model):
     def __str__(self):
         return self.name
 
-""" class Log(models.Model):
-    action = models.CharField(max_length=255, unique = True)
-    user = models.CharField(max_length=255, unique = True)
-    subject = models.CharField(max_length=255, unique = True)
+class Log(models.Model):
+    action = models.CharField(max_length=255)
+    user = models.CharField(max_length=255)
+    subject = models.CharField(max_length=255)
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.name """
+        return self.name 
 
 class Supply(models.Model):
     name = models.CharField(max_length=255, unique = True)
