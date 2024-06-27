@@ -9,6 +9,9 @@
 </ol>
 {% endblock %}
 
+{% load tz %}
+
+
 {% block content %}
     <h1>Tools:</h1>
     <div class="container">
@@ -29,7 +32,10 @@
                     {{ tool.name }}
                   </td>
                   <td class="align-middle">{{ tool.isCheckedOut  }}</td>
-                  <td class="align-middle">{{ tool.timeCheckedOut }}</td>
+                  <td class="align-middle">{% timezone "America/New_York" %}
+                    {{ tool.timeCheckedOut }}
+                    {% endtimezone %}
+                </td>
                   <td class="align-middle">{{ tool.userCheckedOut }}</td>
                   <td class="align-middle"> {{ tool.location }}</td>
                 </tr>
@@ -59,7 +65,10 @@
                   </td>
                   <td class="align-middle">{{  supply.quantityReplenished}}</td>
                   <td class="align-middle">{{  supply.isLow}}</td>
-                  <td class="align-middle">{{ supply.lastReplenished }}</td>
+                  <td class="align-middle">
+                    {% timezone "America/New_York" %}
+                    {{ supply.timeCheckedOut }}
+                    {% endtimezone %}</td>
                   <td class="align-middle">{{ supply.whoReplenished }}</td>
                   <td class="align-middle"> {{ supply.location }}</td>
                 </tr>

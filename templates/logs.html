@@ -9,6 +9,8 @@
 </ol>
 {% endblock %}
 
+{% load tz %}
+
 {% block content %}
     <h1>LOG</h1>
     <div class="container">
@@ -29,7 +31,9 @@
                   </td>
                   <td class="align-middle">{{ log.user }}</td>
                   <td class="align-middle">{{ log.subject }}</td>
-                  <td class="align-middle">{{ log.time }}</td>
+                  <td class="align-middle">{% timezone "America/New_York" %}
+                    {{ log.time }}
+                    {% endtimezone %}</td>
                 </tr>
               {% endfor %}
         </tbody>
