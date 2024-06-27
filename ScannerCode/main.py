@@ -1,11 +1,9 @@
 import PySimpleGUI as sg
 import requests
 import json
-import RPi.GPIO as GPIO
 import signal
 import time
 import sys
-import keyboard
 import serial
 
 layout = [[sg.Text(text='Inventory Scanner',
@@ -15,22 +13,13 @@ layout = [[sg.Text(text='Inventory Scanner',
 		justification='center')],
 ]
 
-BUTTON_GPIO = 16
 USERLOGGED = 'Ethan'
 BARCODESCANNED = ''
 HIDDENKEY = '1234'
 BASEURL = "http://192.168.1.86:8000"
 
-def setup():
-	GPIO.add_event_detect(BUTTON_GPIO, GPIO.FALLING, callback=button_pressed_callback, bouncetime=1000)
-
 def signal_handler(sig,frame):
-	GPIO.cleanup()
 	sys.exit(0)
-	
-def button_pressed_callback(channel):
-	time.sleep(2)
-	keyboard.press_and_release('enter')
 
 def startUp():
     global USERLOGGED
@@ -41,34 +30,33 @@ def startUp():
             if contents.status_code == 200:
                 break
         except:
-            sg.popup("Can't Connect To Server", no_titlebar=True, auto_close=True, auto_close_duration=2)
+            sg.popup("Can't Connect To Server", no_titlebar=True, auto_close=True,  auto_close_duration=2)
             continue
     return
-        
+
 def waitForUser():
     print("Please scan your Employee Code:")
     while True:
-        sg.popup("Please scan your Employee Code:", no_titlebar=True, auto_close=True, auto_close_duration=2)
+        sg.popup("Please scan your Employee Code:", no_titlebar=True, auto_close=True, non_blocking=True, auto_close_duration=5)
         code = readCodeInput()
         mesCode = loginUser(code) 
+        print(mesCode)
         if  mesCode == -1:
              continue
         else:
             break
 
-def readCodeInput():
-    output = " "
-    ser = serial.Serial('/dev/ttyACM0', 4800, 8, 'N', 1, timeout=1)
-    while True:
-        while output != "":
-            output = ser.readline()
-            print (output)
-        return output
-
 def waitForTool():
     print("You are signed in as " + USERLOGGED +". Please scan a barcode:")
-    code = sg.popup_get_text("You are signed in as " + USERLOGGED +". Please scan a barcode:", no_titlebar=True, font=('Arial Bold', 10))
+    sg.popup("You are signed in as " + USERLOGGED +". Please scan a barcode:", no_titlebar=True, auto_close=True, non_blocking=True, auto_close_duration=5)
+    code = readCodeInput()
+    if code == "":
+         return 0
     codeType = requests.get(BASEURL + "/codes/findtype/" + code + "/")
+    try:
+         codeType.raise_for_status()
+    except:
+         return -1
     if codeType.text == "tool":
         result = checkTool(code)
         if result[0]["fields"]["isCheckedOut"]:
@@ -89,14 +77,13 @@ def waitForTool():
     else:
         sg.popup("Code Not Recongized", no_titlebar=True, auto_close=True, auto_close_duration=1)
 
-
 def loginUser(user):
     global USERLOGGED
     url = BASEURL + "/users/get/" + user + "/"
     while True:
         try:
             contents = requests.get(url)
-            contents.status_code
+            contents.raise_for_status()
             break
         except:
             sg.popup("Employee not in system, please try again", no_titlebar=True, auto_close=True, auto_close_duration=1)
@@ -146,12 +133,22 @@ def replenishSupply(supply):
     obj = json.loads(contents.text)
     return obj
 
+def readCodeInput():
+    output = ""
+    ser = serial.Serial('/dev/ttyACM0', 4800, 8, 'N', 1, timeout=1)
+    for x in range(10):
+        output = ser.readline().rstrip()
+        output = output.decode("ascii")
+        print (output)
+        if output == "":
+             continue
+        else:
+             return output
+    return ""
+            
+
 window = sg.Window("Inventory Sysetm", layout, no_titlebar=False, location=(0,0), size=(480,360), keep_on_top=True).finalize()
 window.bind("<Escape>", "-ESCAPE-")
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(BUTTON_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-signal.signal(signal.SIGINT, signal_handler)
-setup()
 startUp()
 while True:
 	waitForUser()

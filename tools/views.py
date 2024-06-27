@@ -221,6 +221,8 @@ def newTool(request):
         form = NewToolForm()
     return render(request, 'new_tool.html', {'form':form})
 
+
+
 @csrf_exempt 
 def newSupply(request):
     if request.method == 'POST':
@@ -235,3 +237,5 @@ def newSupply(request):
         form = NewSupplyForm()
     return render(request, 'new_supply.html', {'form':form})
  
+
+
