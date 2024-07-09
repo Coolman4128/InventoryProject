@@ -32,13 +32,13 @@
                     {{ job.name }}
                   </td>
                   <td class="align-middle">
-                    <img src="{{job.barcode_img.url}}" width="150" height="45"> </img>
+                    <img src="{{job.barcode_img.url}}" width="200" height="70"> </img>
                   </td>
                   <td class="align-self-end">
                   {% if job.isBeingWorkedOn == True %}
-                  <img class="align-self-center" src="/media/images/greenlight.png" width="45" height="45"> </img>
+                  <img class="align-self-center" src="/media/images/greenlight.png" width="70" height="70"> </img>
                   {% else %}
-                  <img class="align-self-center" src="/media/images/redlight.png" width="45" height="45"> </img>
+                  <img class="align-self-center" src="/media/images/redlight.png" width="70" height="70"> </img>
                   {% endif %}
                 </td>
                 <td class="align-middle">

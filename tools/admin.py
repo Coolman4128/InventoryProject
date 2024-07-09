@@ -4,6 +4,7 @@ from .models import Supply
 from .models import InvUser
 from .models import Job
 from .models import Log
+from .models import Kiln
 # Register your models here.
 
 admin.site.register(Tool)
@@ -11,3 +12,4 @@ admin.site.register(Supply)
 admin.site.register(InvUser)
 admin.site.register(Job)
 admin.site.register(Log)
+admin.site.register(Kiln)

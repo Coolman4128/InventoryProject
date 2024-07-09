@@ -12,8 +12,30 @@
 {% load tz %}
 
 {% block content %}
-    <h1>LOG</h1>
+{% csrf_token %}
     <div class="container">
+      <h2>Search:</h2>
+      <form method="post">
+        <div class="form-group">
+        <small class="form-text">
+        <label for="cats">Catagory:</label><br>
+        <select id="cat" name="cat">
+          <option value="subject">Subject</option>
+          <option value="user">User</option>
+          <option value="action">Action</option>
+        </select>
+      </small>
+        <small class="form-text">
+        <label for="key">Value:</label><br>
+        <input type="text" id="key" name="value">
+        </small>
+        <h3></h3>
+        <input type="submit"class="btn btn-success"></input>
+      </div>
+      </form>
+    </div>
+    <div class="container">
+      <h2>Results:</h2>
       <table class="table table-sm table-bordered">
         <thead class="thead-dark">
             <tr>

@@ -6,6 +6,7 @@ from .models import Supply
 from .models import InvUser
 from .models import Job
 from .models import Log
+from .models import Kiln
 from .forms import NewToolForm
 from .forms import NewSupplyForm
 from .forms import NewJobForm
@@ -25,6 +26,7 @@ ENCRYPTEDSCANKEYS[0] = fernet.encrypt(SCANNERKEYS[0].encode())
 LOWSUPPLYCODE = "12345678910"
 
 
+
 def createLog(action, user, subject):
     log = Log()
     log.action = action
@@ -33,16 +35,53 @@ def createLog(action, user, subject):
     log.time = timezone.now()
     log.save()
 
-def home(request):
+def dashboard(request):
+    tools = Tool.objects.all()
+    supplys = Supply.objects.all()
+    users = InvUser.objects.all()
+    jobs = Job.objects.all()
+    logs = Log.objects.all().order_by("-id").values()
+    kilns = Kiln.objects.all()
+
+    return render(request, "dashboard.html", {'jobs': jobs, 'supplys': supplys, 'kilns': kilns, 'logs': logs})
+
+
+def toolsupp(request):
     tools = Tool.objects.all()
     supplys = Supply.objects.all()
     return render(request, 'home.html', {'tools': tools, 'supplys': supplys})
 
+@csrf_exempt 
 def log(request):
     logs = Log.objects.all().order_by("-id").values()
-    return render(request, 'logs.html', {'logs': logs})
+    if request.method == 'POST':
+        cat = request.POST["cat"]
+        value = request.POST['value']
+        filteredLogs = logSearch(cat, value, logs)
+        return render(request, 'logs.html', {'logs': filteredLogs})
+    else:
+        return render(request, 'logs.html', {'logs': logs})
+
+@csrf_exempt 
+def logSearch(cat, key, logs):
+    filteredLogs = []
+    match cat:
+        case "subject":
+            for log in logs:
+                if log["subject"] == key:
+                    filteredLogs = filteredLogs + [log]
+        case "user":
+            for log in logs:
+                if log["user"] == key:
+                    filteredLogs = filteredLogs + [log]
+        case "action":
+            for log in logs:
+                if log["action"] == key:
+                    filteredLogs = filteredLogs + [log]
+    return filteredLogs
 
 def jobs(request):
+    
     allJobs = Job.objects.all()
     return render(request, 'jobs.html', {"jobs": allJobs})
 
@@ -149,6 +188,7 @@ def scanIntoJob(request, pk, key, user):
             usersWorking = job.userScannedIn.split("-")
             if user in usersWorking:
                 usersWorking.remove(user)
+                createLog("Scanned Out", user, job.name)
                 if usersWorking == []:
                     job.isBeingWorkedOn = False
                     job.userScannedIn = ""
@@ -159,7 +199,7 @@ def scanIntoJob(request, pk, key, user):
 
             else:
                 usersWorking = usersWorking + [user]
-                print(usersWorking)
+                createLog("Scanned In", user, job.name)
                 timeWorked = (((timezone.now() - job.timeScannedIn).total_seconds()) / 3600) * len(usersWorking)
                 job.userScannedIn = s.join(usersWorking)
                 job.timeScannedIn = timezone.now()
@@ -168,8 +208,8 @@ def scanIntoJob(request, pk, key, user):
             job.isBeingWorkedOn = True
             job.timeScannedIn = timezone.now()
             job.userScannedIn = user
+            createLog("Scanned In", user, job.name)
         job.save()
-        createLog("Scanned In/Out", user, job.name)
         return HttpResponse(serializers.serialize('json', [job]), content_type='application/json')
     else:
         return HttpResponse("NOT AUTHENTICATED")

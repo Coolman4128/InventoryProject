@@ -24,6 +24,16 @@ class Job(models.Model):
 
     def __str__(self):
         return self.name
+    
+class Kiln(models.Model):
+    name = models.CharField(max_length=255, unique = True)
+    barcodeID = models.CharField(max_length=255, unique=True)
+    isFilled = models.BooleanField()
+    timeFilled = models.DateTimeField(null=True, blank=True)
+    userFilled = models.CharField(max_length=255, blank=True)
+
+    def __str__(self):
+        return self.name
 
 class Log(models.Model):
     action = models.CharField(max_length=255)

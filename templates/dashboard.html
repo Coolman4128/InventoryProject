@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Mountain Inventory{% endblock %}
+  
+
+{% block breadcrumb %}
+<ol class="breadcrumb my-4">
+  <li class="breadcrumb-item">Dashboard</li>
+</ol>
+ 
+{% endblock %}
+
+{% load tz %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+
+
+        <!--FIRST ROW, FIRST COLUMN-->
+       <div class="col-xs-6 col-sm-6 col-md-6 ">
+        <h1><a href="/jobs" style="color: #000000; text-decoration: none;">Jobs:</a></h1>
+        <div class = "table-responsive" style="max-height: 300px;">
+            
+        <table class="table table-sm table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Job</th>
+                    <th scope="col">Worked On?</th>
+                    <th scope="col">Total Hours</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for job in jobs %}
+                    <tr>
+                        <td class="align-middle">
+                        {{ job.name }}
+                      </td>
+                      <td class="align-self-end">
+                      {% if job.isBeingWorkedOn == True %}
+                      <img class="align-self-center" src="/media/images/greenlight.png" width="25" height="25"> </img>
+                      {% else %}
+                      <img class="align-self-center" src="/media/images/redlight.png" width="25" height="25"> </img>
+                      {% endif %}
+                    </td>
+                      <td class="align-middle">
+                        {{ job.totalHours|floatformat:"-3"}}
+                      </td>
+                    </tr>
+                  {% endfor %}
+            </tbody>
+          </table>
+        </div>
+       </div>
+
+        <!--FIRST ROW, SECOND COLUMN-->
+       <div class="col-xs-6 col-sm-6 col-md-6 overflow-auto">
+        <h1><a href="/tools" style="color: #000000; text-decoration: none;">Supplies:</a></h1>
+        <div class = "table-responsive " style="max-height: 300px;">
+         
+          <table class="table table-sm table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Supply</th>
+                    <th>Is Low?</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for supply in supplys %}
+                    <tr>
+                        <td class="align-middle">
+                        {{ supply.name }}
+                      </td>
+                      <td class="align-middle">{{  supply.isLow}}</td>
+                    </tr>
+                  {% endfor %}
+            </tbody>
+          </table>
+        </div>
+       </div>
+</div>
+
+    <div class="row">
+
+        <div class="col-xs-6 col-sm-6 col-md-6 overflow-auto">
+            <h1><a href="/jobs" style="color: #000000; text-decoration: none;">Kiln:</a></h1>
+            <table class="table table-sm table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Kiln Name</th>
+                        <th>Is Filled?</th>
+                        <th>Time Filled</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+            {% for kiln in kilns %}
+                    <tr>
+                        <td class="align-middle">
+                        {{ kiln.name }}
+                      </td>
+                      <td class="align-middle">{{  kiln.isFilled}}</td>
+                      <td class="align-middle">{{  kiln.timeFilled}}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            <h1><a href="/logs" style="color: #000000; text-decoration: none;">Logs:</a></h1>
+            <div class = "table-responsive" style="max-height: 300px;">
+            
+            <table class="table table-sm table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Action</th>
+                        <th>User</th>
+                        <th>Subject</th>
+                        <th>Time</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+            {% for log in logs %}
+                    <tr>
+                        <td class="align-middle">
+                        {{ log.action }}
+                      </td>
+                      <td class="align-middle">{{  log.user}}</td>
+                      <td class="align-middle">{{  log.subject}}</td>
+                      <td class="align-middle">{% timezone "America/New_York" %}
+                        {{ log.time }}
+                        {% endtimezone %}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+{% endblock %}
