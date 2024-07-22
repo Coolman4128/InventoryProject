@@ -27,6 +27,7 @@ from django.urls import re_path
 
 urlpatterns =[
     re_path(r"^$", views.dashboard, name="home"),
+    re_path(r"^test/$", views.test, name="test"),
     re_path(r"^tools/$", views.toolsupp, name="tools"),
     re_path(r"^logs/$", views.log, name="logs"),
     re_path(r"^logs/(?P<cat>\w+)/(?P<key>\w+)/$", views.logSearch, name="logsSearch"),

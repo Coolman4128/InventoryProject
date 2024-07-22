@@ -13,54 +13,56 @@
 
 {% block content %}
 {% csrf_token %}
-    <div class="container">
-      <h2>Search:</h2>
-      <form method="post">
-        <div class="form-group">
-        <small class="form-text">
-        <label for="cats">Catagory:</label><br>
-        <select id="cat" name="cat">
+<div class="flex flex-col gap-8 p-8 bg-gray-100">
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-xl font-semibold mb-4 text-indigo-600">Search Logs</h2>
+    <form method="post" class="flex gap-4 mb-6">
+      {% csrf_token %}
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2" for="cat">Category</label>
+        <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" id="cat" name="cat">
           <option value="subject">Subject</option>
           <option value="user">User</option>
           <option value="action">Action</option>
         </select>
-      </small>
-        <small class="form-text">
-        <label for="key">Value:</label><br>
-        <input type="text" id="key" name="value">
-        </small>
-        <h3></h3>
-        <input type="submit"class="btn btn-success"></input>
       </div>
-      </form>
-    </div>
-    <div class="container">
-      <h2>Results:</h2>
-      <table class="table table-sm table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th>Action</th>
-                <th>User</th>
-                <th>Subject</th>
-                <th>Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for log in logs %}
-                <tr>
-                    <td class="align-middle">
-                    {{ log.action}}
-                  </td>
-                  <td class="align-middle">{{ log.user }}</td>
-                  <td class="align-middle">{{ log.subject }}</td>
-                  <td class="align-middle">{% timezone "America/New_York" %}
-                    {{ log.time }}
-                    {% endtimezone %}</td>
-                </tr>
-              {% endfor %}
+      <div>
+        <label class="block text-gray-700 font-semibold mb-2" for="key">Value</label>
+        <input class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" id="key" name="value" type="text"/>
+      </div>
+      <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300" type="submit">Search</button>
+    </form>
+  </div>
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-xl font-semibold mb-4 text-indigo-600">Results</h2>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead>
+          <tr class="bg-indigo-600 text-white uppercase text-sm leading-normal">
+            <th class="py-3 px-6">Action</th>
+            <th class="py-3 px-6">User</th>
+            <th class="py-3 px-6">Subject</th>
+            <th class="py-3 px-6">Time</th>
+          </tr>
+        </thead>
+        <tbody class="text-gray-600 text-sm font-light">
+          {% for log in logs %}
+          <tr class="border-b border-gray-200 hover:bg-gray-100">
+            <td class="py-3 px-6 font-medium">{{ log.action }}</td>
+            <td class="py-3 px-6">{{ log.user }}</td>
+            <td class="py-3 px-6">{{ log.subject }}</td>
+            <td class="py-3 px-6">
+              {% timezone "America/New_York" %}
+              {{ log.time }}
+              {% endtimezone %}
+            </td>
+          </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>
+  </div>
+</div>
 {% endblock %}
 
 

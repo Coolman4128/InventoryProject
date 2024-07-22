@@ -45,6 +45,8 @@ def dashboard(request):
 
     return render(request, "dashboard.html", {'jobs': jobs, 'supplys': supplys, 'kilns': kilns, 'logs': logs})
 
+def test(request):
+    return render(request, "cool.html")
 
 def toolsupp(request):
     tools = Tool.objects.all()

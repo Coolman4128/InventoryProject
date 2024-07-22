@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Mountain Inventory{% endblock %}
+
+
+{% block breadcrumb %}
+<ol class="breadcrumb my-4">
+  <li class="breadcrumb-item">Dashboard</li>
+</ol>
+ 
+{% endblock %}
+
+{% load tz %}
+
+{% block content %}
+
+<div class="flex flex-col md:flex-row gap-4">
+    <div class="bg-white rounded-lg shadow-md p-6 flex-1">
+      <h2 class="text-xl font-semibold mb-4 text-gray-800">Job Status</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <div class="bg-green-100 rounded-lg p-4 text-green-800">
+          <h3 class="font-semibold">🟢 Active</h3>
+          <p class="text-3xl font-bold">28</p>
+        </div>
+        <div class="bg-yellow-100 rounded-lg p-4 text-yellow-800">
+          <h3 class="font-semibold">⚠️ Pending</h3>
+          <p class="text-3xl font-bold">12</p>
+        </div>
+        <div class="bg-red-100 rounded-lg p-4 text-red-800">
+          <h3 class="font-semibold">🔴 Overdue</h3>
+          <p class="text-3xl font-bold">5</p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow-md p-6 flex-1">
+      <h2 class="text-xl font-semibold mb-4 text-gray-800">Materials</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="bg-blue-100 rounded-lg p-4 text-blue-800">
+          <h3 class="font-semibold">🧱 Bricks</h3>
+          <p class="text-3xl font-bold">42,500</p>
+        </div>
+        <div class="bg-orange-100 rounded-lg p-4 text-orange-800">
+          <h3 class="font-semibold">🪵 Lumber</h3>
+          <p class="text-3xl font-bold">18,000 ft</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-col md:flex-row gap-4 w-full mt-4">
+    <div class="bg-white rounded-lg shadow-md p-6 flex-1">
+      <h2 class="text-xl font-semibold mb-4 text-gray-800">Logs</h2>
+      <div class="h-64 overflow-y-auto">
+        <div class="p-2 bg-gray-100 rounded-md mb-2">
+          <p class="text-gray-800">Received 500 bricks from Supplier A</p>
+          <p class="text-gray-500 text-sm">12:45 PM</p>
+        </div>
+        <div class="p-2 bg-gray-100 rounded-md mb-2">
+          <p class="text-gray-800">Job #245 completed ahead of schedule</p>
+          <p class="text-gray-500 text-sm">10:15 AM</p>
+        </div>
+        <div class="p-2 bg-gray-100 rounded-md mb-2">
+          <p class="text-gray-800">Ordered 1,000 ft of lumber from Supplier B</p>
+          <p class="text-gray-500 text-sm">9:30 AM</p>
+        </div>
+        <div class="p-2 bg-gray-100 rounded-md mb-2">
+          <p class="text-gray-800">Job #237 delayed due to weather conditions</p>
+          <p class="text-gray-500 text-sm">8:45 AM</p>
+        </div>
+        <div class="p-2 bg-gray-100 rounded-md mb-2">
+          <p class="text-gray-800">Kiln maintenance scheduled for next week</p>
+          <p class="text-gray-500 text-sm">7:00 AM</p>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-lg shadow-md p-6 flex-1">
+      <h2 class="text-xl font-semibold mb-4 text-gray-800">Kiln Status</h2>
+      <div class="bg-red-100 rounded-lg p-4 text-red-800">
+        <h3 class="font-semibold">🔥 Temperature</h3>
+        <p class="text-3xl font-bold">1,200°C</p>
+      </div>
+      <div class="mt-4 bg-green-100 rounded-lg p-4 text-green-800">
+        <h3 class="font-semibold">✅ Status</h3>
+        <p class="text-lg font-semibold">Active</p>
+      </div>
+    </div>
+  </div>
+  <div class="bg-white rounded-lg shadow-md p-6 flex-1"><iframe src="https://i.simmer.io/@Coolman4128/spacetestgame" style="width:1500px;height:950px"></iframe></div>
+  
+  {% endblock %}
